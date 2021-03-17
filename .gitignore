@@ -1,0 +1,31 @@
+# Project exclude paths
+target/
+classes/
+out/
+# Gradle
+.gradle/
+build/
+
+#InteLLij IDEA
+.idea/
+lib/
+*.iws
+*.iml
+*.ipr
+# Ecliose
+.classpath
+.project
+.settings
+# ----Mac os X
+.DS_Store
+##----------Other----------
+# osx
+*~
+##----------Android----------
+# build
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
