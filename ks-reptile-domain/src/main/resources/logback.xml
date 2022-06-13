@@ -1,0 +1,135 @@
+<!-- 级别从高到低 OFF 、 FATAL 、 ERROR 、 WARN 、 INFO 、 DEBUG 、 TRACE 、 ALL -->
+<!-- 日志输出规则 根据当前ROOT 级别，日志输出时，级别高于root默认的级别时 会输出 -->
+<!-- 以下 每个配置的 filter 是过滤掉输出文件里面，会出现高级别文件，依然出现低级别的日志信息，通过filter 过滤只记录本级别的日志 -->
+<!-- scan 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。 -->
+<!-- scanPeriod 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+<!-- debug 当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
+<configuration scan="true" debug="true">
+    <!-- 动态日志级别 -->
+    <jmxConfigurator />
+    <!-- 定义日志文件 输出位置 -->
+    <property name="log_dir" value="logs/ks-file" />
+    <property name="debug" value="debug" />
+    <property name="info" value="info" />
+    <property name="warn" value="warn" />
+    <property name="error" value="error" />
+
+    <property name="maxFileSize" value="100MB" />
+    <property name="totalSizeCap" value="10GB" />
+    <!-- 日志最大的历史 30天 -->
+    <property name="maxHistory" value="30" />
+
+    <property name="charset" value="UTF-8" />
+    <property name="logStyle" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+    <!-- ConsoleAppender 控制台输出日志 -->
+    <!-- 自定义高亮颜色 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>false</withJansi>
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %-10([%thread]) %-5level %logger{50} (%file:%line\) - %msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- ERROR级别日志 -->
+    <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 RollingFileAppender -->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器，只记录WARN级别的日志 -->
+        <!-- 果日志级别等于配置级别，过滤器会根据onMath 和 onMismatch接收或拒绝日志。 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 设置过滤级别 -->
+            <level>ERROR</level>
+            <!-- 用于配置符合过滤条件的操作 -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 用于配置不符合过滤条件的操作 -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/%d{yyyy-MM-dd}/${error}-%i.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logStyle}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/%d{yyyy-MM-dd}/${warn}-%i.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logStyle}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+
+    <!--INFO-->
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/%d{yyyy-MM-dd}/${info}-%i.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logStyle}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+
+    <!--DEBUG 日志记录-->
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/%d{yyyy-MM-dd}/${debug}-%i.log</fileNamePattern>
+            <maxHistory>${maxHistory}</maxHistory>
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${logStyle}</pattern>
+            <charset>${charset}</charset>
+        </encoder>
+    </appender>
+    <!-- 打印debug级别日志及以上级别日志 -->
+    <root level="DEBUG">
+        <appender-ref ref="console" />
+    </root>
+    <!-- root级别 INFO -->
+    <root level="INFO">
+        <!-- 文件输出 -->
+        <appender-ref ref="ERROR" />
+        <appender-ref ref="INFO" />
+        <appender-ref ref="WARN" />
+        <appender-ref ref="DEBUG" />
+    </root>
+
+    <!-- 指定包下的日志输出级别 -->
+    <logger name="org.apache.http" level="ERROR"></logger>
+    <logger name="com.netflix.discovery" level="ERROR"></logger>
+    <logger name="com.netflix.loadbalancer" level="ERROR"></logger>
+    <logger name="com.zaxxer.hikari.pool" level="ERROR"></logger>
+</configuration>
